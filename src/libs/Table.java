@@ -83,10 +83,14 @@ public class Table
             if (selected_values.contains(from_table.data.get(i).get(pos)))
             {
                 ArrayList<String> record = new ArrayList<String>();
-                System.out.println(from_table.data.get(0) + " " + from_table.data.get(1) + " " + from_table.data.get(2));
+                System.out.println(from_table.data.get(i).get(0) + " " + from_table.data.get(i).get(1) + " " + from_table.data.get(i).get(2));
+                record.add(from_table.data.get(i).get(0));
+                record.add(from_table.data.get(i).get(1));
+                record.add(from_table.data.get(i).get(2));
+                data.add(record);
             }
         }
-       
+       this.tableToCsv();
         
     }
     
