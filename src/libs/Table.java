@@ -63,12 +63,16 @@ public class Table
     {
         
         name = new String(table_name);
-        fields.add("recordID");
+        //fields.add("recordID");
         
-        for (String f: from_table.fields){
-            fields.add(from_table.name+"_"+f);
-        }
+//        for (String f: from_table.fields){
+//            fields.add(from_table.name+"_"+f);
+//        }
+          for (String f: from_table.fields){
+              fields.add(f);
+          }
         
+
         int pos = from_table.fields.indexOf(selected_field_to_check);
         
         
