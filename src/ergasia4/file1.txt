@@ -1,0 +1,3 @@
+select recordID, lastName, firstName from student
+where firstName=="ΠΕΤΡΟΣ" or "ΠΑΥΛΟΣ"
+create GiortiPetrouPavlou
