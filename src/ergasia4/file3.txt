@@ -1,0 +1,81 @@
+select recordID, lastName, firstName from student
+where firstName=="ΠΕΤΡΟΣ" or "ΠΑΥΛΟΣ"
+create GiortiPetrouPavlou
+
+join student, studentCourse 
+where recordID == studentID
+create studentNameCourse
+
+select recordID, lastName, firstName
+from student join studentNameCourse on recordID == student_recordID
+create test
+
+select lastName, firstName 
+join student, studentCourse 
+where recordID == studentID
+create studentNameCourse
+
+
+
+
+<program> 	::= <statement>1 ( ; <statement>2 )*
+<statement> 	::= select <select> | join <join>
+<select> 	::= <columns> from <table>1 
+			<where-part>
+			create <table>2 
+
+<where-part>	::= where <condition> | ε
+<columns> 	::= <column>1 ( , <column>2 )*
+<condition> 	::= <column> == <value>1 ( or <value>2 )*
+<join> 		::= <table>1 , <table>2 
+			where <column>1 == <column>2
+			create <table>3
+<table> 	::= string
+<column> 	::= string
+<value> 	::= “string”
+
+
+
+--------------------------------------------------------
+
+
+<program> 	::= <statement>1 ( ; <statement>2 )*
+<statement> 	::= select <select> | join <join>
+<select> 	::= <columns> from <table>1 
+			<join-part>
+			<where-part>			
+			<create> 
+<join-part>	::= join <table>2 on <column>1 == <column>2|ε
+<where-part>	::= where <condition> | ε
+<columns> 	::= <column>1 ( , <column>2 )*
+<condition> 	::= <column> == <value>1 ( or <value>2 )*
+<join> 		::= <table>1 , <table>2 
+			where <column>1 == <column>2
+			<create>
+
+<create>	::= create <table>3 |ε
+<table> 	::= string
+<column> 	::= string
+<value> 	::= “string”
+
+
+
+
+--------------------------------------------------------
+
+
+<program> 	::= <statement>1 ( ; <statement>2 )*
+<statement> 	::= select <select> | join <join> | select <columns> join <join>
+<select> 	::= <columns> from <table>1 
+			<where-part>
+			create <table>2 
+
+<where-part>	::= where <condition> | ε
+<columns> 	::= <column>1 ( , <column>2 )*
+<condition> 	::= <column> == <value>1 ( or <value>2 )*
+<join> 		::= <table>1 , <table>2 
+			where <column>1 == <column>2
+			create <table>3
+<table> 	::= string
+<column> 	::= string
+<value> 	::= “string”

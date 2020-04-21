@@ -77,6 +77,7 @@ public class Table
             System.out.println("invalid field name given in join");
             System.exit(0);
         }
+        
 
         int primary_key = 1;
         for (int i=0; i<from_table.data.size(); i++)

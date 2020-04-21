@@ -1,3 +1,11 @@
-select recordID, lastName, firstName
-from student join studentNameCourse on recordID == student_recordID
-create test
+join student, studentCourse 
+where recordID == studentID
+create studentNameCourse
+;
+join studentNameCourse, course
+where studentCourse_courseID == courseID
+create studentNameCourseSecond
+;
+select recordID, lastName, firstName, course
+from studentNameCourseSecond
+create apotelesma
