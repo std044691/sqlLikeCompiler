@@ -57,24 +57,66 @@ public class Table
         }  
     }
     
+    public Table(String table_name, Table from_table, ArrayList<String> selected_fields_to_present, String selected_field_to_check, ArrayList<String> selected_values, Table joinedTable, String selected_field_1, String selected_field_2) 
+    // create table from select with join
+    {
+        name = new String(table_name);
+        fields.add("recordID");
+
+
+        for (String f: from_table.fields)
+            fields.add(from_table.name+"_"+f);
+        for (String f: joinedTable.fields)
+            fields.add(joinedTable.name+"_"+f);
+
+        int pos_1 = from_table.fields.indexOf(selected_field_1);
+        int pos_2 = joinedTable.fields.indexOf(selected_field_2);
+
+        if (pos_1==-1 || pos_2==-1)
+        {
+            System.out.println("invalid field name given in join");
+            System.exit(0);
+        }
+
+        int primary_key = 1;
+        for (int i=0; i<from_table.data.size(); i++)
+        {
+            for (int j=0; j<joinedTable.data.size(); j++)
+            {
+                if (from_table.data.get(i).get(pos_1).equals(joinedTable.data.get(j).get(pos_2)))
+                {
+                    ArrayList<String> record = new ArrayList<String>();
+                    record.add(String.valueOf(primary_key));
+                    for (String s:from_table.data.get(i)){
+                        if(selected_fields_to_present.contains(s))
+                            record.add(s);
+                    }
+                    for (String s:joinedTable.data.get(j)){
+                        if(selected_fields_to_present.contains(s))
+                            record.add(s);
+                    }
+                    
+                    primary_key++;
+                    data.add(record);
+                }
+            }
+        }
+        this.tableToCsv();
         
+        
+    }   
+    
     public Table(String table_name, Table from_table, ArrayList<String> selected_fields_to_present, String selected_field_to_check, ArrayList<String> selected_values) 
     // create table from select
     {
         
         name = new String(table_name);
-        //fields.add("recordID");
-        
-//        for (String f: from_table.fields){
-//            fields.add(from_table.name+"_"+f);
-//        }
-          for (String f: from_table.fields){
-              fields.add(f);
-          }
-        
 
-        int pos = from_table.fields.indexOf(selected_field_to_check);
+        for (String f: from_table.fields){
+            fields.add(f);
+        }
         
+        int pos = from_table.fields.indexOf(selected_field_to_check);        
         
         if (pos==-1){
             System.out.println("invalid field name ("+selected_field_to_check+") for select ");
@@ -88,14 +130,16 @@ public class Table
             {
                 ArrayList<String> record = new ArrayList<String>();
                 System.out.println(from_table.data.get(i).get(0) + " " + from_table.data.get(i).get(1) + " " + from_table.data.get(i).get(2));
-                record.add(from_table.data.get(i).get(0));
-                record.add(from_table.data.get(i).get(1));
-                record.add(from_table.data.get(i).get(2));
+                
+                for(int j=0;j<from_table.data.get(i).size();j++){
+                    record.add(from_table.data.get(i).get(j));                    
+                }
+                
                 data.add(record);
             }
         }
-       this.tableToCsv();
         
+        this.tableToCsv();        
     }
     
     public Table(String table_name, Table table_1, Table table_2, String selected_field_1, String selected_field_2) 

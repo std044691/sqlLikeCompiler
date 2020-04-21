@@ -6,20 +6,23 @@ import java.util.ArrayList;
 //<program> 	::= <statement>1 ( ; <statement>2 )*
 //<statement> 	::= select <select> | join <join>
 //<select> 	::= <columns> from <table>1 
-//			<where-part>
-//			create <table>2 
-//
+//			<join-part>
+//			<where-part>			
+//			<create> 
+//<join-part>	::= join <table>2 on <column>1 == <column>2|ε
 //<where-part>	::= where <condition> | ε
 //<columns> 	::= <column>1 ( , <column>2 )*
 //<condition> 	::= <column> == <value>1 ( or <value>2 )*
 //<join> 		::= <table>1 , <table>2 
 //			where <column>1 == <column>2
-//			create <table>3
+//			<create>
+//
+//<create>	::= create <table>3 |ε
 //<table> 	::= string
 //<column> 	::= string
 //<value> 	::= “string”
 
-public class Parser {
+public class Parser_V2 {
         private Lex lex;   
         private Token token;
         private int noOfErrors;
@@ -29,8 +32,12 @@ public class Parser {
         private String tableToCreate;
         private String selected_field_to_check="";       
         private ArrayList<String> selected_values;
+        private Table joinedTable;
+        private String selected_field_1, selected_field_2;
+        private String tableName;
         
-        public Parser (String filename){
+        
+        public Parser_V2 (String filename){
             this.lex = new Lex(filename);            
             this.token = lex.nextToken();
             this.createCommand = false;
@@ -38,6 +45,7 @@ public class Parser {
             this.existingFields = new ArrayList<String>();
             this.tableToCreate = "";
             this.selected_field_to_check = "";
+            this.tableName = "";
             this.selected_values = new ArrayList<String>();
             
             program();  
@@ -88,29 +96,20 @@ public class Parser {
             }
         }
         
-        private void select(){            
-            String table_name = "";
-            Table from_table = null;
-                        
+        private void select(){
             
+            Table from_table = null;
+            Boolean hasJoin = false;                                                            
             columns();
             if(token.type.name()=="fromTK"){
                 this.createCommand=false;
                 token = lex.nextToken();
+            
                 //table();
                 from_table = new Table(table());
-                
+                hasJoin = join_part();
                 where_part();
-                
-                if(token.type.name()=="createTK"){
-                    this.createCommand=true;
-                    token = lex.nextToken();
-                    table_name = token.data;
-                    table();                    
-                    
-                }else{
-                    error(token.type.name());
-                }
+                create();                
             }else{
                 error(token.type.name());
             }
@@ -122,8 +121,25 @@ public class Parser {
             //String selected_field_to_check, OK
             //ArrayList<String> selected_values); OK
             
-            new Table(table_name, from_table , selectedFields, this.selected_field_to_check, this.selected_values);
+            if(hasJoin){
+                if(this.createCommand)
+                    new Table(this.tableName, from_table , selectedFields, this.selected_field_to_check, this.selected_values, this.joinedTable, this.selected_field_1, this.selected_field_2);
+            }
+            else{
+                if(this.createCommand)
+                    new Table(this.tableName, from_table , selectedFields, this.selected_field_to_check, this.selected_values);
+            }
         }                
+        
+        private void create(){
+            if(token.type.name()=="createTK"){
+                this.createCommand=true;
+                token = lex.nextToken();
+                this.tableName = table();
+            }else{                
+                ;
+            }
+        }
         
         private void where_part(){
             if(token.type.name()=="whereTK"){
@@ -157,6 +173,31 @@ public class Parser {
             }          
         }
         
+        private Boolean join_part(){
+            String table_name = "";           
+            Boolean hasJoin = false;
+                                   
+            if (token.type.name() == "joinTK"){
+                hasJoin = true;
+                token = lex.nextToken();
+                this.joinedTable = new Table(table());
+                if(token.type.name()=="onTK"){
+                    token = lex.nextToken();
+                    this.selected_field_1=column();
+                    if (token.type.name() == "equalTK"){
+                        token = lex.nextToken();
+                        this.selected_field_2=column();
+                    } else error("symbol == expected");
+                }else{
+                    error("table expected for join");
+                }                
+            } else{                
+                ;
+            } 
+            
+            return hasJoin;            
+        }
+        
         private void join()
         {
             String table_name="";
@@ -180,9 +221,9 @@ public class Parser {
                             token = lex.nextToken();
                             this.createCommand = true;
                             table_name = new String(table());
-                        } else error ("create expected");
+                        } else error ("create expected");                                                    
                     } else error("symbol == expected");
-                } else error("where expected");
+                } else error("where expected");                                    
             } else error("comma expected");
             
             new Table(table_name, table_1, table_2, selected_field_1, selected_field_2);

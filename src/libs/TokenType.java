@@ -9,6 +9,7 @@ public enum TokenType {
         fromTK("from"),
         createTK("create"),
         whereTK("where"),
+        onTK("on"),
         orTK("or"),
         equalTK("=="),       
         semicolTK(";"),

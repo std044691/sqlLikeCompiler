@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.io.*; 
 import java.util.regex.*;
 import libs.Parser;
+import libs.Parser_V2;
 import libs.Token;
 
 public class SQLlike 
@@ -21,10 +22,11 @@ public class SQLlike
 //        System.out.println(b);
                 
         
+        //String file = "src/ergasia4/file1.txt";
+        String file = "src/ergasia4/file2.txt";
         
-        String file = "src/ergasia4/file1.txt";
-        
-        Parser p = new Parser(file);
+        //Parser p = new Parser(file);
+        Parser_V2 p = new Parser_V2(file);
                     
     }
      
