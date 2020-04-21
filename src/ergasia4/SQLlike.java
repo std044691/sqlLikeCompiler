@@ -23,7 +23,7 @@ public class SQLlike
                 
         
         //String file = "src/ergasia4/file1.txt";
-        String file = "src/ergasia4/file2.txt";
+        String file = "src/ergasia4/file1.txt";
         
         Parser p = new Parser(file);
         //Parser_V2 p = new Parser_V2(file);

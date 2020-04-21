@@ -1,4 +1,4 @@
-recordID,student_recordID,student_lastName,student_firstName,student_age,studentCourse_﻿recordID,studentCourse_studentID,studentCourse_courseID
+recordID,student_recordID,student_lastName,student_firstName,student_age,studentCourse_recordID,studentCourse_studentID,studentCourse_courseID
 1,1,ΧΑΤΖΗΟΓΛΟΥ,ΝΙΚΟΛΑΟΣ,20,1,1,3
 2,1,ΧΑΤΖΗΟΓΛΟΥ,ΝΙΚΟΛΑΟΣ,20,2,1,4
 3,2,ΜΗΛΟΣ,ΠΑΥΛΟΣ,21,3,2,1

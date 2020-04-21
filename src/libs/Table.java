@@ -60,15 +60,31 @@ public class Table
     public Table(String table_name, Table from_table, ArrayList<String> selected_fields_to_present, String selected_field_to_check, ArrayList<String> selected_values, Table joinedTable, String selected_field_1, String selected_field_2) 
     // create table from select with join
     {
-        name = new String(table_name);
-        fields.add("recordID");
+        name = new String(table_name);        
+        //fields.add("recordID");
 
-
-        for (String f: from_table.fields)
-            fields.add(from_table.name+"_"+f);
-        for (String f: joinedTable.fields)
-            fields.add(joinedTable.name+"_"+f);
-
+        ArrayList<Integer> colPositions = new ArrayList<Integer>();
+        Integer col=0;
+        
+        for (String f: from_table.fields){
+            if(selected_fields_to_present.contains(f)){
+                fields.add(from_table.name+"_"+f);                
+                //fields.add(f);
+                colPositions.add(col);
+                
+            }
+            col++;
+        }
+        for (String f: joinedTable.fields){
+            if(selected_fields_to_present.contains(f)){
+                fields.add(joinedTable.name+"_"+f);
+                //fields.add(f);
+                colPositions.add(col);
+            }
+            col++;
+        }
+        //System.out.println(colPositions);
+        
         int pos_1 = from_table.fields.indexOf(selected_field_1);
         int pos_2 = joinedTable.fields.indexOf(selected_field_2);
 
@@ -80,6 +96,7 @@ public class Table
         
 
         int primary_key = 1;
+        col=0;
         for (int i=0; i<from_table.data.size(); i++)
         {
             for (int j=0; j<joinedTable.data.size(); j++)
@@ -87,17 +104,24 @@ public class Table
                 if (from_table.data.get(i).get(pos_1).equals(joinedTable.data.get(j).get(pos_2)))
                 {
                     ArrayList<String> record = new ArrayList<String>();
-                    record.add(String.valueOf(primary_key));
+                    //record.add(String.valueOf(primary_key));
+                                        
                     for (String s:from_table.data.get(i)){
-                        if(selected_fields_to_present.contains(s))
-                            record.add(s);
+                            if(colPositions.contains(col)){
+                                record.add(s);                 
+                            }
+                            col++;
                     }
-                    for (String s:joinedTable.data.get(j)){
-                        if(selected_fields_to_present.contains(s))
-                            record.add(s);
+                    
+                    for (String s:joinedTable.data.get(j)){                        
+                            if(colPositions.contains(col)){
+                                record.add(s);                 
+                            }
+                            col++;
                     }
                     
                     primary_key++;
+                    col=0;
                     data.add(record);
                 }
             }
@@ -112,33 +136,74 @@ public class Table
     {
         
         name = new String(table_name);
+        ArrayList<Integer> colPositions = new ArrayList<Integer>();
 
-        for (String f: from_table.fields){
-            fields.add(f);
+        for (String f: selected_fields_to_present){
+            fields.add(f);            
+            System.out.print(f + " ");
+        }
+        System.out.println("");
+        System.out.println("---------------");
+        
+        for (String f: selected_fields_to_present){
+            colPositions.add(from_table.fields.indexOf(f));
         }
         
-        int pos = from_table.fields.indexOf(selected_field_to_check);        
         
-        if (pos==-1){
-            System.out.println("invalid field name ("+selected_field_to_check+") for select ");
-            System.exit(0);
-        }       
-            
-        for (int i=0; i<from_table.data.size(); i++)
-        {
-
-            if (selected_values.contains(from_table.data.get(i).get(pos)))
-            {
+        if(selected_field_to_check!=""){
+            int pos = from_table.fields.indexOf(selected_field_to_check); 
+            if (pos==-1){
+                System.out.println("invalid field name ("+selected_field_to_check+") for select ");
+                System.exit(0);
+            }
+                        
+            for(ArrayList<String> row : from_table.data){
                 ArrayList<String> record = new ArrayList<String>();
-                System.out.println(from_table.data.get(i).get(0) + " " + from_table.data.get(i).get(1) + " " + from_table.data.get(i).get(2));
                 
-                for(int j=0;j<from_table.data.get(i).size();j++){
-                    record.add(from_table.data.get(i).get(j));                    
+                for(int colPos :colPositions){                
+                    if (selected_values.contains(row.get(pos))){
+                        System.out.print(row.get(colPos)+ " ");
+                        record.add(row.get(colPos));
+                    }
                 }
-                
                 data.add(record);
+                
+                if (selected_values.contains(row.get(pos))){
+                    System.out.println("");
+                }
+            }
+        }else{
+            for(ArrayList<String> row : from_table.data){
+                ArrayList<String> record = new ArrayList<String>();
+                
+                for(int colPos :colPositions){                                    
+                    System.out.print(row.get(colPos)+ " ");
+                    record.add(row.get(colPos));
+                }     
+                data.add(record);
+                System.out.println("");                
             }
         }
+        
+        
+        
+        
+        
+            
+//        for (int i=0; i<from_table.data.size(); i++)
+//        {
+//
+//            if (selected_values.contains(from_table.data.get(i).get(pos))){
+//                ArrayList<String> record = new ArrayList<String>();                                
+//                for(int j=0;j<from_table.data.get(i).size();j++){
+//                    if(colPositions.contains(j)){
+//                        record.add(from_table.data.get(i).get(j));
+//                    }
+//                }
+//                
+//                data.add(record);
+//            }
+//        }
         
         this.tableToCsv();        
     }

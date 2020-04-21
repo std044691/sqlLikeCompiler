@@ -134,11 +134,12 @@ public class Parser {
                 ;
             }
         }  
-        private void columns(){            
-            column();
+        private void columns(){
+            this.selectedFields.add(column());
+            
             while(token.type.name()=="commaTK"){
                 token = lex.nextToken();
-                column();
+                this.selectedFields.add(column());
             }
         }
         
@@ -211,8 +212,7 @@ public class Parser {
         private String column(){
             String val="";
             if(token.type.name()== "stringTK"){                
-                val = token.data.toString();
-                this.selectedFields.add(val);                
+                val = token.data.toString();                
                 token = lex.nextToken();
             }else{
                 error("error");
