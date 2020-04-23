@@ -84,3 +84,8 @@ create studentNameCourse
 select student_lastName, student_firstName, course
 from studentNameCourseId join course on studentCourse_recordID == courseID
 create final
+
+
+select recordID, studentNameCourse_student_lastName, studentNameCourse_student_firstName, course_course
+from studentNameCourseNames
+create final;

@@ -63,26 +63,32 @@ public class Table
         name = new String(table_name);        
         //fields.add("recordID");
 
-        ArrayList<Integer> colPositions = new ArrayList<Integer>();
+        ArrayList<Integer> colPosFromTable = new ArrayList<Integer>();
+        ArrayList<Integer> colPosJoinTable = new ArrayList<Integer>();
         Integer col=0;
         
-        for (String f: from_table.fields){
-            if(selected_fields_to_present.contains(f)){
-                fields.add(from_table.name+"_"+f);                
-                //fields.add(f);
-                colPositions.add(col);
-                
+        for (String f: selected_fields_to_present){
+            if(from_table.fields.contains(f)){
+                //fields.add(from_table.name+"_"+f);
+                fields.add(f);
+                colPosFromTable.add(col);
+                System.out.print(f + " ");
+            }
+            col++;            
+        }
+        
+        col=0;
+        for (String f: selected_fields_to_present){
+            if(from_table.fields.contains(f) && !fields.contains(f)){
+                //fields.add(joinedTable.name+"_"+f);                
+                fields.add(f);
+                colPosJoinTable.add(col);
+                System.out.print(f+ " ");
             }
             col++;
         }
-        for (String f: joinedTable.fields){
-            if(selected_fields_to_present.contains(f)){
-                fields.add(joinedTable.name+"_"+f);
-                //fields.add(f);
-                colPositions.add(col);
-            }
-            col++;
-        }
+        System.out.println("");
+        System.out.println("----------------");
         //System.out.println(colPositions);
         
         int pos_1 = from_table.fields.indexOf(selected_field_1);
@@ -97,36 +103,53 @@ public class Table
 
         int primary_key = 1;
         col=0;
-        for (int i=0; i<from_table.data.size(); i++)
-        {
-            for (int j=0; j<joinedTable.data.size(); j++)
-            {
-                if (from_table.data.get(i).get(pos_1).equals(joinedTable.data.get(j).get(pos_2)))
-                {
-                    ArrayList<String> record = new ArrayList<String>();
-                    //record.add(String.valueOf(primary_key));
-                                        
-                    for (String s:from_table.data.get(i)){
-                            if(colPositions.contains(col)){
-                                record.add(s);                 
-                            }
-                            col++;
+        
+        for(ArrayList<String> fromTableRow : from_table.data){
+            for(ArrayList<String> joinedTableRow : joinedTable.data){
+                if (fromTableRow.get(pos_1).equals(joinedTableRow.get(pos_2))){
+                    for(int i: colPosFromTable){
+                        System.out.print(fromTableRow.get(i)+" ");
                     }
                     
-                    for (String s:joinedTable.data.get(j)){                        
-                            if(colPositions.contains(col)){
-                                record.add(s);                 
-                            }
-                            col++;
+                    for(int i: colPosJoinTable){
+                        System.out.print(joinedTableRow.get(i)+" ");
                     }
                     
-                    primary_key++;
-                    col=0;
-                    data.add(record);
-                }
+                    System.out.println("");
+                }                
             }
         }
-        this.tableToCsv();
+        
+//        for (int i=0; i<from_table.data.size(); i++)
+//        {
+//            for (int j=0; j<joinedTable.data.size(); j++)
+//            {
+//                if (from_table.data.get(i).get(pos_1).equals(joinedTable.data.get(j).get(pos_2)))
+//                {
+//                    ArrayList<String> record = new ArrayList<String>();
+//                    //record.add(String.valueOf(primary_key));
+//                                        
+//                    for (String s:from_table.data.get(i)){
+//                            if(colPositions.contains(col)){
+//                                record.add(s);                 
+//                            }
+//                            col++;
+//                    }
+//                    
+//                    for (String s:joinedTable.data.get(j)){                        
+//                            if(colPositions.contains(col)){
+//                                record.add(s);                 
+//                            }
+//                            col++;
+//                    }
+//                    
+//                    primary_key++;
+//                    col=0;
+//                    data.add(record);
+//                }
+//            }
+//        }
+//        this.tableToCsv();
         
         
     }   
@@ -140,16 +163,12 @@ public class Table
 
         for (String f: selected_fields_to_present){
             fields.add(f);            
+            colPositions.add(from_table.fields.indexOf(f));
             System.out.print(f + " ");
         }
         System.out.println("");
         System.out.println("---------------");
-        
-        for (String f: selected_fields_to_present){
-            colPositions.add(from_table.fields.indexOf(f));
-        }
-        
-        
+                                
         if(selected_field_to_check!=""){
             int pos = from_table.fields.indexOf(selected_field_to_check); 
             if (pos==-1){
@@ -183,28 +202,7 @@ public class Table
                 data.add(record);
                 System.out.println("");                
             }
-        }
-        
-        
-        
-        
-        
-            
-//        for (int i=0; i<from_table.data.size(); i++)
-//        {
-//
-//            if (selected_values.contains(from_table.data.get(i).get(pos))){
-//                ArrayList<String> record = new ArrayList<String>();                                
-//                for(int j=0;j<from_table.data.get(i).size();j++){
-//                    if(colPositions.contains(j)){
-//                        record.add(from_table.data.get(i).get(j));
-//                    }
-//                }
-//                
-//                data.add(record);
-//            }
-//        }
-        
+        }        
         this.tableToCsv();        
     }
     

@@ -57,6 +57,9 @@ public class Parser {
             statement();
             while(token.type.name()=="semicolTK"){
                 token = lex.nextToken();
+                if(token.type.name()=="eofTK"){
+                    break;
+                }
                 statement();    
             }
             
