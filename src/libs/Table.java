@@ -57,6 +57,7 @@ public class Table
         }  
     }
     
+    //Πήγα να αλλάξω την γραμματική να πειραματιστώ λίγο 
     public Table(String table_name, Table from_table, ArrayList<String> selected_fields_to_present, String selected_field_to_check, ArrayList<String> selected_values, Table joinedTable, String selected_field_1, String selected_field_2) 
     // create table from select with join
     {
@@ -118,80 +119,67 @@ public class Table
                     System.out.println("");
                 }                
             }
-        }
-        
-//        for (int i=0; i<from_table.data.size(); i++)
-//        {
-//            for (int j=0; j<joinedTable.data.size(); j++)
-//            {
-//                if (from_table.data.get(i).get(pos_1).equals(joinedTable.data.get(j).get(pos_2)))
-//                {
-//                    ArrayList<String> record = new ArrayList<String>();
-//                    //record.add(String.valueOf(primary_key));
-//                                        
-//                    for (String s:from_table.data.get(i)){
-//                            if(colPositions.contains(col)){
-//                                record.add(s);                 
-//                            }
-//                            col++;
-//                    }
-//                    
-//                    for (String s:joinedTable.data.get(j)){                        
-//                            if(colPositions.contains(col)){
-//                                record.add(s);                 
-//                            }
-//                            col++;
-//                    }
-//                    
-//                    primary_key++;
-//                    col=0;
-//                    data.add(record);
-//                }
-//            }
-//        }
-//        this.tableToCsv();
-        
-        
+        }                   
     }   
     
     public Table(String table_name, Table from_table, ArrayList<String> selected_fields_to_present, String selected_field_to_check, ArrayList<String> selected_values) 
     // create table from select
-    {
-        
+    {     
+        //Το όνομα του αρχείου CSV 
         name = new String(table_name);
+        //Δήλωση των θέσεων των στοιχείων του πίνακα. Θα μπορούσα να το κάνω με hashmap αλλά οκ..
         ArrayList<Integer> colPositions = new ArrayList<Integer>();
 
+        //Καταχώρηση των θέσεων των στηλών του πίνακα που επιλέγονται να εμφανιστούν
         for (String f: selected_fields_to_present){
+            //Καταχώρηση του πεδίου στην λίστα των πεδίων που χρησιμοποιείτε για την δημιουργία του αρχείου
             fields.add(f);            
+            
+            //Καταχώρηση της θέσης της κολόνας από το αρχείο
             colPositions.add(from_table.fields.indexOf(f));
+            //Τυπικό print να δούμε τι θα γραφτεί στο αρχείο
             System.out.print(f + " ");
         }
+        
+        //Απλά ένα κενό να χωρίζουν οι τίτλοι των πεδίων από τα πεδία με μια γραμμή.. Απλά για το print δεν έχει να κάνει με το αρχείο
         System.out.println("");
         System.out.println("---------------");
-                                
+
+        //Ελέγχουμε το πεδί του where να δούμε αν υπάρχει ώστε να επιλέξουμε τα πεδία σύμφωνα με την συνθήκη. Αλλιώς τα επιλέγουμε όλα.        
         if(selected_field_to_check!=""){
+            //Βρίσκουμε την θέση του πεδίου που θέλουμε να ελέγξουμε στο αρχείο
             int pos = from_table.fields.indexOf(selected_field_to_check); 
+            
+            //Αν δεν υπάρχει στο αρχείο τότε σκάμε με το ακόλουθο μήνυμα
             if (pos==-1){
                 System.out.println("invalid field name ("+selected_field_to_check+") for select ");
                 System.exit(0);
             }
                         
+            //Λούπα για κάθε γραμμή των δεδομέων του αρχείου
             for(ArrayList<String> row : from_table.data){
+                //Δημιουργώ ένα record
                 ArrayList<String> record = new ArrayList<String>();
                 
+                //Για κάθε κολόνα που είναι να εμφανίσω
                 for(int colPos :colPositions){                
+                    //ελέγχω αν η κολόνα υπάρχει στην γραμμή
                     if (selected_values.contains(row.get(pos))){
+                        //Την τυπώνω.. στο αρχείο και στην οθόνη. Ίσως εδώ καλύτερα να γινόταν η δουλειά με hashmap
                         System.out.print(row.get(colPos)+ " ");
                         record.add(row.get(colPos));
                     }
-                }
-                data.add(record);
+                }                
                 
+                //Καταγράφω την γραμμή στο αρχείο-πίνακα και τυπώνω ένα κενό στην οθόνη
                 if (selected_values.contains(row.get(pos))){
                     System.out.println("");
+                    data.add(record);
                 }
             }
         }else{
+            
+            //Απλά τυπώνω τα πάντα στο αρχείο και στην οθόνη χωρίς έλεγχο με την σωστή σειρά
             for(ArrayList<String> row : from_table.data){
                 ArrayList<String> record = new ArrayList<String>();
                 

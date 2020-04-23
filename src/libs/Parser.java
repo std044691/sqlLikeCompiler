@@ -51,34 +51,44 @@ public class Parser {
         }
     
         
+        //Έναρξη του προγράμματος του parser. Εδώ υλοποιείτε ο κανόνας της γραμματικής
+        //<program> 	::= <statement>1 ( ; <statement>2 )*
         private void program(){
+            //Θέτω τον αριθμό των σφαλμάτων σε 0
             this.noOfErrors=0;
-            System.out.println("Compiling..");
+            //Τυπώνω απλά την έναρξη του συντακτικού ελέγχου
+            System.out.println("Checking syntax..");
+            //Εκτελώ την συνάρτηση statement όπως ορίζει η γραμματική
             statement();
+            //Καθώς βρίσκω semicolons ";" προχωράω στην επόμενη εντολή
             while(token.type.name()=="semicolTK"){
                 token = lex.nextToken();
+                //Αν βρω το τέλος του αρχείου τότε βγαίνω. Δηλαδή σε περίπτωση που βρω ; και μετά τίποτα
                 if(token.type.name()=="eofTK"){
                     break;
                 }
+                //Αλλιώς εκτελώ την επόμενη εντολή
                 statement();    
             }
             
-            System.out.println("Compiling finished..");
+            //Απλά ένας έλεγχος για το αν υπάρχουν λάθει και τυπώνει στην οθόνη ότι τελείωσε ο έλεγχος.
+            System.out.println("Checking syntax finished..");
             if(this.noOfErrors==0){
-                System.out.println("Successfull compiling");
+                System.out.println("Code is ok");
             }
             
             
-            System.out.println("Executing..");
-            for(String s: selectedFields){                
+            //Ελέγχω ποιο πεδίο δεν υπάρχει στον πίνακα.
+            System.out.println("Executing..");  
+            for(String s: selectedFields){
                 if(!existingFields.contains(s)){
                     error("Field "+ s + " does not exist in tables");
                 }
-            }
-                        
-            
+            }                                    
         }
         
+        //Υλοποίηση του κανόνα
+        //<statement> 	::= select <select> | join <join>
         private void statement(){            
             if(token.type.name()=="selectTK"){
                 token = lex.nextToken();
@@ -91,6 +101,10 @@ public class Parser {
             }
         }
         
+        //Υλοποίηση του κανόνα της γραμματικής
+        ////<select> 	::= <columns> from <table>1 
+        //                  <where-part>
+        //		    create <table>2   
         private void select(){            
             String table_name = "";
             Table from_table = null;
@@ -116,18 +130,13 @@ public class Parser {
                 }
             }else{
                 error(token.type.name());
-            }
-            
-            //new Table(
-            //String table_name, OK
-            //Table from_table,  OK
-            //ArrayList<String> selected_fields_to_present, OK
-            //String selected_field_to_check, OK
-            //ArrayList<String> selected_values); OK
+            }             
             
             new Table(table_name, from_table , selectedFields, this.selected_field_to_check, this.selected_values);
         }                
         
+        //Υλοποίηση του κανόνα
+        //<where-part>	::= where <condition> | ε
         private void where_part(){
             if(token.type.name()=="whereTK"){
                 token = lex.nextToken();
@@ -137,6 +146,9 @@ public class Parser {
                 ;
             }
         }  
+        
+        //Υλοποίηση του κανόνα
+        //<columns> 	::= <column>1 ( , <column>2 )*
         private void columns(){
             this.selectedFields.add(column());
             
@@ -146,6 +158,8 @@ public class Parser {
             }
         }
         
+        //Υλοποίηση του κανόνα
+        //<condition> 	::= <column> == <value>1 ( or <value>2 )*
         private void condition(){            
             column();
             if(token.type.name()== "equalTK"){
@@ -192,26 +206,30 @@ public class Parser {
             new Table(table_name, table_1, table_2, selected_field_1, selected_field_2);
         }        
         
+        //Υλοποίηση της γραμματικής <table> 	::= string με κάποιες προσθήκες
         private String table(){
             String val="";
             if(token.type.name()== "stringTK"){
+                //Διαβάζουμε την τιμή του ονόματος του πίνακα
                 val = token.data.toString();
+                //Ελέγχω αν έρχομαι εδώ μετά από το from του select και όχι από το create. Αν έρχομαι μετά από from
+                //Τότε σώζω τα πεδία του πίνακα για να τα ελέγξω αν υπάρχουν
                 if(this.createCommand==false){
+                    //Αν δεν υπάρχει ο πίνακας τότε θα κάνει error μέσα στο exception handling της κλάσης table
                     Table tb = new Table(val);
                     for(String s: tb.fields){
-                        this.existingFields.add(s);                        
+                        this.existingFields.add(s);
                     }
-                }
-                                
-                val = token.data.toString();
-                token = lex.nextToken();
-                
+                }               
+                token = lex.nextToken();                
             }else{
-                error("error");
+                error("Table name expeted");
             }
             return val;
         }
         
+        //Υλοποίηση του 
+        //<column> 	::= string
         private String column(){
             String val="";
             if(token.type.name()== "stringTK"){                
@@ -223,6 +241,9 @@ public class Parser {
             return val;
         } 
         
+        
+        //Υλοποίηση του 
+        //<value> 	::= “string”
         private String value(){
             String val="";
             if(token.type.name()== "quoatedStringTK"){

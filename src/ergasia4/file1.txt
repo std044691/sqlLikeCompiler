@@ -1,3 +1,2 @@
-select firstName, recordID
-from student join studentCourse on recordID == recordID
-create test;
+select lastName, firstName, recordID from student
+create GiortiPetrouPavlou;
