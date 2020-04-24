@@ -112,32 +112,33 @@ public class Table {
         }
     }
 
-    public Table(String table_name, Table from_table, ArrayList<String> selected_fields_to_present, String selected_field_to_check, ArrayList<String> selected_values) // create table from select
+    public Table(String table_name, Table from_table, ArrayList<String> selected_fields_to_present, String selected_field_to_check, ArrayList<String> selected_values) 
+    // create table from select
     {
         //Το όνομα του αρχείου CSV 
         name = new String(table_name);
         //Φτιάχνω το Record ID το AA του κανούργιου πίνακα
-        fields.add("recordID");
-        //Απλά το τυπώνω στην οθόνη
-        System.out.print("recordID ");
-        Integer recordID = 0;
+//        fields.add("recordID");
+//        //Απλά το τυπώνω στην οθόνη
+//        System.out.print("recordID ");
+//        Integer recordID = 1;
         //Δήλωση των θέσεων των στοιχείων του πίνακα. Θα μπορούσα να το κάνω με hashmap αλλά οκ..
         ArrayList<Integer> colPositions = new ArrayList<Integer>();
 
         //Καταχώρηση των θέσεων των στηλών του πίνακα που επιλέγονται να εμφανιστούν
+        
         for (String f : selected_fields_to_present) {
             //Καταχώρηση του πεδίου στην λίστα των πεδίων που χρησιμοποιείτε για την δημιουργία του αρχείου
-            fields.add(from_table.name + "_" + f + " ");
-
+            fields.add(f);            
             //Καταχώρηση της θέσης της κολόνας από το αρχείο
             colPositions.add(from_table.fields.indexOf(f));
             //Τυπικό print να δούμε τι θα γραφτεί στο αρχείο
-            System.out.print(from_table.name + "_" + f + " ");
+            
         }
 
         //Απλά ένα κενό να χωρίζουν οι τίτλοι των πεδίων από τα πεδία με μια γραμμή.. Απλά για το print δεν έχει να κάνει με το αρχείο
-        System.out.println("");
-        System.out.println("---------------");
+        System.out.println(fields);
+        System.out.println("------------------------");
 
         //Ελέγχουμε το πεδί του where να δούμε αν υπάρχει ώστε να επιλέξουμε τα πεδία σύμφωνα με την συνθήκη. Αλλιώς τα επιλέγουμε όλα.        
         if (selected_field_to_check != "") {
@@ -162,7 +163,7 @@ public class Table {
                     //ελέγχω αν η κολόνα υπάρχει στην γραμμή
                     if (selected_values.contains(row.get(pos))) {
                         if (recordIDAdded == false) {
-                            record.add(recordID.toString());
+                            //record.add(recordID.toString());
                             recordIDAdded = true;
                         }
                         //Την τυπώνω.. στο αρχείο και στην οθόνη. Ίσως εδώ καλύτερα να γινόταν η δουλειά με hashmap
@@ -175,7 +176,7 @@ public class Table {
                 if (selected_values.contains(row.get(pos))) {
                     System.out.println(record);
                     //System.out.println("");
-                    recordID++;
+                    //recordID++;
                     data.add(record);
                 }
             }
@@ -196,7 +197,8 @@ public class Table {
         this.tableToCsv();
     }
 
-    public Table(String table_name, Table table_1, Table table_2, String selected_field_1, String selected_field_2) // create table from join
+    public Table(String table_name, Table table_1, Table table_2, String selected_field_1, String selected_field_2) 
+// create table from join
     {
         name = new String(table_name);
         fields.add("recordID");

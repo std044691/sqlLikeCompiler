@@ -1,3 +1,9 @@
-select lastName, firstName, recordID from student
-where firstName=="ΠΕΤΡΟΣ" or "ΠΑΥΛΟΣ" or "ΝΙΚΟΛΑΟΣ"
-create GiortiPetrouPavlou;
+join student, studentCourse 
+where recordID == studentID
+create ErotimaDjoin;
+join course, ErotimaDjoin
+where courseID == studentCourse_courseID
+create ErotimaDprogram;
+select recordID,ErotimaDjoin_student_lastName,ErotimaDjoin_student_firstName,course_course
+from ErotimaDprogram
+create ErotimaDprogram;
