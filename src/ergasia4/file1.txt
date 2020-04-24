@@ -1,2 +1,3 @@
 select lastName, firstName, recordID from student
+where firstName=="ΠΕΤΡΟΣ" or "ΠΑΥΛΟΣ" or "ΝΙΚΟΛΑΟΣ"
 create GiortiPetrouPavlou;

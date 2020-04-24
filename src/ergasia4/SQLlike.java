@@ -14,14 +14,7 @@ public class SQLlike
 {  
    
     public static void main(String[] args)
-    {
-        
-//        Pattern p = Pattern.compile("a(a|b)*");
-//        Matcher m = p.matcher("abbb");
-//        boolean b = m.matches();
-//        System.out.println(b);
-                
-        
+    {              
         //String file = "src/ergasia4/file1.txt";
         String file = "src/ergasia4/file1.txt";
         
